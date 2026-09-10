@@ -135,3 +135,11 @@ function handleAction(m,c){
  if(m.action==="draw"){if(p.hand.length>=5)return;p.hand.push(state.deck.pop());if(points(p.hand)>21||p.hand.length===5)p.stand=true}
  if(m.action==="stand")p.stand=true;
  if(state.players.every(x=>x.stand)){while(points(state.dealer)<17&&state.dealer.length<5)state.dealer.push(state
+
+$("createBtn").onclick=createRoom;
+$("joinBtn").onclick=joinRoom;
+$("startBtn").onclick=startRound;
+$("newBtn").onclick=newRound;
+$("drawBtn").onclick=()=>sendAction("draw");
+$("standBtn").onclick=()=>sendAction("stand");
+$("copyBtn").onclick=copyInvite;
