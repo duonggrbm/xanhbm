@@ -81,5 +81,57 @@ function setupPeer(id,host){
 
 function wireHost(c){
   let joined=false;
-  c.on("open",()=>{
-    c
+  c.on("open",()=>{c.send({type:"hello",room,hostName:meName});});
+  c.on("data",m=>{
+    if(m.type==="join"){
+      if(joined)return; joined=true;
+      if(state.players.length>=10){c.send({type:"full"});c.close();return}
+      if(state.phase!=="lobby"){c.send({type:"started"});c.close();return}
+      state.players=state.players.filter(p=>p.id!==m.id);
+      state.players.push({id:m.id,name:String(m.name||"Bạn").slice(0,18),host:false,hand:[],stand:false,conn:c});
+      c.send({type:"joined",room,state:safeState()});
+      broadcast(); render();
+    }else if(m.type==="action"){handleAction(m,c);}
+  });
+  c.on("error",e=>console.error("Guest connection:",e));
+  c.on("close",()=>{state.players=state.players.filter(p=>p.conn!==c);broadcast();render();});
+}
+
+function wireGuest(c){
+  c.on("open",()=>{$("status").textContent="Đã nối tới chủ phòng, đang xác nhận vào phòng...";});
+  c.on("data",m=>{
+    if(m.type==="hello"){c.send({type:"join",id:peer.id,name:meName});return;}
+    if(m.type==="joined"){ $("status").textContent="Đã vào phòng. Chờ Chủ phòng chia bài."; if(m.state){state=m.state;render();} return;}
+    if(m.type==="state"){state=m.state;render();return;}
+    if(m.type==="full"){toast("Phòng đã đủ người");return}
+    if(m.type==="started"){toast("Ván đang diễn ra, hãy chờ ván sau");return}
+  });
+  c.on("error",e=>{console.error("Host connection:",e);toast("Kết nối với chủ phòng bị lỗi.");});
+  c.on("close",()=>{$("status").textContent="Mất kết nối với chủ phòng. Hãy tải lại trang để vào lại.";});
+}
+
+function createRoom(){
+  meName=$("hostName").value.trim()||"Cái";
+  isHost=true;
+  room=roomCode(); // gán mã phòng trước
+  setupPeer("xidach-"+room,true);
+}
+
+function joinRoom(){
+  const btn=$("joinBtn");
+  if(btn && btn.disabled)return;
+  room=$("roomCode").value.trim().toUpperCase();
+  meName=$("joinName").value.trim()||"Bạn";
+  if(!/^[A-Z0-9]{5}$/.test(room)){toast("Mã phòng phải có 5 ký tự");return;}
+  if(btn){btn.disabled=true;btn.textContent="Đang kết nối...";}
+  isHost=false;
+  setupPeer("guest-"+Math.random().toString(36).slice(2,8),false);
+}
+
+function startRound(){if(!isHost)return;state.phase="play";state.deck=makeDeck();state.dealer=[state.deck.pop(),state.deck.pop()];state.players.forEach(p=>{p.hand=[state.deck.pop(),state.deck.pop()];p.stand=false});state.log.unshift("Ván mới bắt đầu.");broadcast();render();}
+function newRound(){if(!isHost)return;state.phase="lobby";state.dealer=[];state.players.forEach(p=>{p.hand=[];p.stand=false});broadcast();render();}
+function handleAction(m,c){
+ const p=state.players.find(x=>x.conn===c);if(!p||state.phase!=="play"||p.stand)return;
+ if(m.action==="draw"){if(p.hand.length>=5)return;p.hand.push(state.deck.pop());if(points(p.hand)>21||p.hand.length===5)p.stand=true}
+ if(m.action==="stand")p.stand=true;
+ if(state.players.every(x=>x.stand)){while(points(state.dealer)<17&&state.dealer.length<5)state.dealer.push(state
