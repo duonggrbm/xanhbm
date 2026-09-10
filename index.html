@@ -2,50 +2,30 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Xì Dách Bạn Bè</title>
+  <title>Xì Dách Online</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 </head>
 <body>
-<div id="home" class="wrap">
-  <h1>Xì Dách Bạn Bè</h1>
-  <div class="panel">
-    <h2>Tạo phòng (làm Cái)</h2>
-    <input id="hostName" placeholder="Tên của bạn">
-    <button id="createBtn" class="primary wide">Tạo phòng</button>
-  </div>
-  <div class="panel">
-    <h2>Vào phòng</h2>
-    <input id="roomCode" placeholder="Mã phòng (ABCDE)">
-    <input id="joinName" placeholder="Tên của bạn">
-    <button id="joinBtn" class="wide">Vào phòng</button>
-  </div>
-</div>
-
-<div id="game" class="wrap hidden">
-  <div class="header">
-    <div class="room" id="code"></div>
-    <div class="actions">
-      <button id="startBtn">Chia bài</button>
-      <button id="newBtn">Ván mới</button>
-      <button id="drawBtn">Rút</button>
-      <button id="standBtn">Dừng</button>
-      <button id="copyBtn">Copy lời mời</button>
+  <h1>Trò chơi Xì Dách</h1>
+  <div id="game">
+    <div class="section">
+      <h2>Bài của bạn</h2>
+      <div id="player-cards" class="cards"></div>
+      <p id="player-score">Điểm: 0</p>
+      <button onclick="hit()">Rút bài</button>
+      <button onclick="stand()">Dừng</button>
     </div>
-  </div>
-  <div id="status" class="status"></div>
-  <div id="players" class="players"></div>
-  <div class="table">
-    <div class="dealer">Cái</div>
-    <div id="dealerCards" class="cards"></div>
-    <div id="dealerScore" class="score">?</div>
-  </div>
-  <div id="hands"></div>
-  <div id="roundResult" class="result"></div>
-  <div class="logPanel"><div id="log" class="log"></div></div>
-</div>
 
-<div id="toast" class="toast"></div>
-<script src="app.js"></script>
+    <div class="section">
+      <h2>Bài của cái</h2>
+      <div id="dealer-cards" class="cards"></div>
+      <p id="dealer-score">Điểm: 0</p>
+    </div>
+
+    <p id="result"></p>
+    <button onclick="restart()">Chơi lại</button>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
