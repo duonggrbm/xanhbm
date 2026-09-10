@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Xì Dách Bạn Bè</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="wrap">
+    <section id="home" class="panel">
+      <h1>🃏 XÌ DÁCH BẠN BÈ</h1>
+      <p class="muted">Phòng riêng • Chủ phòng làm Cái • Điểm ảo</p>
+      <div class="grid">
+        <div class="box">
+          <h2>Tạo phòng</h2>
+          <input id="hostName" maxlength="18" placeholder="Tên của bạn">
+          <button class="primary wide" id="createBtn">👑 Tạo phòng & làm Cái</button>
+        </div>
+        <div class="box">
+          <h2>Vào phòng</h2>
+          <input id="joinName" maxlength="18" placeholder="Tên của bạn">
+          <input id="roomCode" maxlength="5" placeholder="Mã phòng (5 ký tự)">
+          <button class="wide" id="joinBtn">🚪 Vào phòng</button>
+        </div>
+      </div>
+      <div class="rules">
+        <b>Luật cơ bản:</b> bộ 52 lá; A = 1 hoặc 11; J/Q/K = 10; quá 21 là Quắc.
+        Xì Dách = A + 10/J/Q/K; Xì Bàng = AA; Ngũ Linh = 5 lá không quá 21.
+        Chỉ dùng điểm ảo, không tiền thật.
+      </div>
+    </section>
+
+    <section id="game" class="hidden">
+      <div class="panel header">
+        <div>
+          <div class="label">MÃ PHÒNG</div>
+          <div id="code" class="room"></div>
+        </div>
+        <div class="actions">
+          <button id="copyBtn">📋 Sao chép lời mời</button>
+          <button id="startBtn" class="primary hidden">▶️ Chia bài</button>
+          <button id="newBtn" class="primary hidden">🔄 Ván mới</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div id="status" class="status">Đang kết nối...</div>
+        <div id="players" class="players"></div>
+      </div>
+
+      <section class="table">
+        <div class="dealer">👑 CÁI — <span id="dealerScore">?</span></div>
+        <div id="dealerCards" class="cards"></div>
+        <hr>
+        <div id="hands"></div>
+        <div id="actions" class="center hidden">
+          <button class="primary" id="drawBtn">🃏 Rút</button>
+          <button id="standBtn">✋ Dừng</button>
+        </div>
+        <div id="roundResult" class="center result"></div>
+      </section>
+
+      <div class="panel logPanel">
+        <h2>📜 Lịch sử ván</h2>
+        <div id="log" class="log"></div>
+      </div>
+    </section>
+  </main>
+  <div id="toast" class="toast"></div>
+
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
